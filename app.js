@@ -1,5 +1,6 @@
 //jshint esversion:6
 const express =require("express");
+require('dotenv').config();
 const ejs =require("ejs");
 const mongoose = require("mongoose");
 const encrypt=require("mongoose-encryption");
@@ -15,8 +16,8 @@ const userSchema = new mongoose.Schema({
   email:String,
   password:String
 });
-const secret ="this is my secret";
-userSchema.plugin(encrypt,{secret:secret,encryptedFeilds:["password"]});
+
+userSchema.plugin(encrypt,{secret:process.env.SECRET,encryptedFeilds:["password"]});
 const User = mongoose.model("User",userSchema);
 
 
@@ -30,9 +31,7 @@ app.get("/register",function(req,res){
 app.get("/login",function(req,res){
   res.render("login");
 });
-app.get("/logout",function(req,res){
-  res.redirect("/");
-});
+
 app.post("/register",function(req,res){
   const newUser = new User({
     email:req.body.username,
